@@ -1,7 +1,7 @@
 import * as path from "path";
 import { defaultLoginSwzPath, ensureBackup, parseSwz, SwzPatchError, writeSwz } from "./swzPatchUtils";
 
-const RUN_ANIM_TAG = "\t\t\t<RunAnim>Charge</RunAnim>\r\n";
+const RUN_ANIM_TAG = "\t\t\t<RunAnim>Run</RunAnim>\r\n";
 const MOVE_SPEED_TAG = "\t\t\t<MoveAnimSpeed>0.75</MoveAnimSpeed>\r\n";
 const TARGETS = ["GoblinBoss2", "GoblinBoss2Hard"];
 
@@ -38,11 +38,18 @@ function patchEntTypeBlock(xml: string, entName: string): { xml: string; changed
 
   const gfxClose = gfxEnd + "</GfxType>".length;
   const gfxBlock = block.slice(gfxStart, gfxClose);
-  if (gfxBlock.includes("<RunAnim>Charge</RunAnim>")) {
+  if (gfxBlock.includes("<RunAnim>Run</RunAnim>")) {
     return { xml, changed: false };
   }
+  if (gfxBlock.includes("<RunAnim>Charge</RunAnim>")) {
+    const updatedBlock = gfxBlock.replace("<RunAnim>Charge</RunAnim>", "<RunAnim>Run</RunAnim>");
+    return {
+      xml: `${xml.slice(0, start + gfxStart)}${updatedBlock}${xml.slice(start + gfxClose)}`,
+      changed: true,
+    };
+  }
   if (gfxBlock.includes("<RunAnim>")) {
-    throw new SwzPatchError(`${entName} already has a non-Charge RunAnim override`);
+    throw new SwzPatchError(`${entName} already has a non-Run RunAnim override`);
   }
 
   const moveSpeedIndex = gfxBlock.indexOf(MOVE_SPEED_TAG);
@@ -75,7 +82,7 @@ function main(): number {
       changed = changed || patched.changed;
     }
 
-    const status = TARGETS.map((entName) => `${entName}: ${xml.includes(`<EntType EntName="${entName}"`) && xml.includes(`<RunAnim>Charge</RunAnim>`) ? "Charge" : "missing"}`);
+    const status = TARGETS.map((entName) => `${entName}: ${xml.includes(`<EntType EntName="${entName}"`) && xml.includes(`<RunAnim>Run</RunAnim>`) ? "Run" : "missing"}`);
     console.log(`SWZ: ${swzPath}`);
     for (const line of status) {
       console.log(line);

@@ -14,13 +14,13 @@ import {
 const LINE_REPLACEMENTS = [
   {
     current: "4 Boss <Goto Red 1>You're the one that killed our Kraken!",
-    target: "4 Boss <Charge><Goto Red 1>You're the one that killed our Kraken!",
-    detail: "Force Charge emote during boss walk-in line",
+    target: "4 Boss <Run Loop><Goto Red 1>You're the one that killed our Kraken!",
+    detail: "Force looping Run emote during boss walk-in line",
   },
   {
     current: "8 Boss That was the last of our Monster Fleet!",
-    target: "8 Boss <Charge><Goto Red 1>That was the last of our Monster Fleet!",
-    detail: "Force Charge emote during boss approach taunt",
+    target: "8 Boss <End>That was the last of our Monster Fleet!",
+    detail: "Explicitly end boss run emote before final taunt",
   },
 ] as const;
 
@@ -48,14 +48,41 @@ function findLinePatches(swfPath: string): { ctx: ReturnType<typeof parseSwf>; p
       continue;
     }
 
-    const idx = abc.stringValues.indexOf(replacement.current);
+    const candidates = [
+      replacement.current,
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Charge><Goto Red 1>")
+        : replacement.current.replace("Boss ", "Boss <Charge><Goto Red 1>"),
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Run><Goto Red 1>")
+        : replacement.current.replace("Boss ", "Boss <Run><Goto Red 1>"),
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Run Loop><Goto Red 1>")
+        : replacement.current.replace("Boss ", "Boss <Run Loop><Goto Red 1>"),
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Run><Goto Red 2>")
+        : replacement.current.replace("Boss ", "Boss <Run><Goto Red 2>"),
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Run Loop><Goto Red 2>")
+        : replacement.current.replace("Boss ", "Boss <Run Loop><Goto Red 2>"),
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Charge><Goto Red 2>")
+        : replacement.current.replace("Boss ", "Boss <Charge><Goto Red 2>"),
+      replacement.current.includes("<Goto Red 1>")
+        ? replacement.current.replace("<Goto Red 1>", "<Goto Red 2>")
+        : replacement.current.replace("Boss ", "Boss <Goto Red 2>"),
+    ];
+    const idx = candidates
+      .map((candidate) => abc.stringValues.indexOf(candidate))
+      .find((candidateIdx) => candidateIdx !== -1) ?? -1;
     if (idx === -1) {
       throw new PatchError(`Goblin boss intro line not found in ABC string pool: ${replacement.current}`);
     }
 
     const lenPos = abc.stringLenPositions[idx];
     const dataPos = abc.stringDataPositions[idx];
-    const oldBytes = Buffer.from(replacement.current, "utf8");
+    const currentValue = abc.stringValues[idx];
+    const oldBytes = Buffer.from(currentValue, "utf8");
     const newBytes = Buffer.from(replacement.target, "utf8");
     patches.push({
       key: `levelsnr_goblin_boss_intro_${patches.length}`,
@@ -64,7 +91,7 @@ function findLinePatches(swfPath: string): { ctx: ReturnType<typeof parseSwf>; p
       data: Buffer.concat([writeU30(newBytes.length), newBytes]),
       detail: replacement.detail,
     });
-    statuses.push(`Current line: ${replacement.current}`);
+    statuses.push(`Current line: ${currentValue}`);
   }
 
   return { ctx, patches, statuses };
