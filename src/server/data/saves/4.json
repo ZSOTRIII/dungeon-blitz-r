@@ -4,9 +4,9 @@
     {
       "name": "Prutacold",
       "class": "Rogue",
-      "level": 3,
-      "xp": 555,
-      "gold": 2379,
+      "level": 4,
+      "xp": 954,
+      "gold": 2888,
       "craftXP": 0,
       "DragonOre": 0,
       "mammothIdols": 0,
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "gearID": 0,
+          "gearID": 766,
           "tier": 0,
           "runes": [
             0,
@@ -104,8 +104,8 @@
       ],
       "CurrentLevel": {
         "name": "NewbieRoad",
-        "x": 12340,
-        "y": 2299
+        "x": 6825,
+        "y": 493
       },
       "PreviousLevel": {
         "name": "CraftTown",
@@ -216,6 +216,110 @@
             0,
             0
           ]
+        },
+        {
+          "gearID": 31,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 661,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 668,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 766,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 50,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 745,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 661,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
+        },
+        {
+          "gearID": 36,
+          "tier": 0,
+          "runes": [
+            0,
+            0,
+            0
+          ],
+          "colors": [
+            0,
+            0
+          ]
         }
       ],
       "gearSets": [],
@@ -227,23 +331,31 @@
       "materials": [
         {
           "materialID": 35,
-          "count": 4
+          "count": 5
         },
         {
           "materialID": 91,
-          "count": 23
+          "count": 43
         },
         {
           "materialID": 92,
-          "count": 10
+          "count": 13
         },
         {
           "materialID": 93,
-          "count": 3
+          "count": 5
         },
         {
           "materialID": 34,
           "count": 2
+        },
+        {
+          "materialID": 112,
+          "count": 1
+        },
+        {
+          "materialID": 106,
+          "count": 1
         }
       ],
       "lockboxes": [
@@ -308,7 +420,7 @@
           "currCount": 0
         }
       },
-      "questTrackerState": 100,
+      "questTrackerState": 11,
       "friends": [],
       "learnedAbilities": [
         {
@@ -320,13 +432,17 @@
           "rank": 1
         },
         {
+          "abilityID": 6,
+          "rank": 1
+        },
+        {
           "abilityID": 9,
           "rank": 1
         }
       ],
       "activeAbilities": [
         3,
-        5,
+        6,
         9
       ],
       "craftTalentPoints": [],
