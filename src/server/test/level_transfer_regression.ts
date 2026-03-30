@@ -250,18 +250,18 @@ function testStorePendingTransferTokenKeepsTokenCharInSyncAndRequestsExtendedSta
     assert.equal(
         GlobalState.pendingExtended.get(50001),
         false,
-        'post-transfer game login should preserve client-side extended state to avoid inventory duplication'
+        'storePendingTransferToken should preserve the explicit sendExtended flag it was given'
     );
 }
 
-function testStorePendingTransferTokenRequestsExtendedStateForCraftTown(): void {
+function testStorePendingTransferTokenRequestsExtendedStateForTransfers(): void {
     const character = createCharacter('Hero');
 
     (LevelHandler as any).storePendingTransferToken(
         50003,
         character,
         41,
-        'CraftTown',
+        'NewbieRoad',
         'NewbieRoad',
         1273,
         1441,
@@ -273,7 +273,7 @@ function testStorePendingTransferTokenRequestsExtendedStateForCraftTown(): void 
     assert.equal(
         GlobalState.pendingExtended.get(50003),
         true,
-        'CraftTown transfers should request the extended player-data payload so home gear displays repopulate'
+        'level transfers should request the extended player-data payload so mount and hotbar state rebuilds reliably'
     );
 }
 
@@ -904,7 +904,7 @@ async function main(): Promise<void> {
         GlobalState.pendingExtended.clear();
         GlobalState.tokenChar.clear();
 
-        testStorePendingTransferTokenRequestsExtendedStateForCraftTown();
+        testStorePendingTransferTokenRequestsExtendedStateForTransfers();
 
         GlobalState.pendingWorld.clear();
         GlobalState.pendingExtended.clear();

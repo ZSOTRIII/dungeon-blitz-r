@@ -2245,6 +2245,11 @@ package
          var _loc44_:Entity = this.var_1.clientEnt;
          if(_loc44_)
          {
+            if(Boolean(_loc44_.mEquipMount))
+            {
+               this.var_1.screenKeybind.UpdateHotbarKeys();
+               this.var_1.method_709();
+            }
             if(_loc30_)
             {
                this.var_1.screenKeybind.UpdateHotbarKeys();
@@ -2253,7 +2258,7 @@ package
             }
             this.var_1.var_1922 = false;
             this.var_1.bWaitingForChangeMasterClassResponse = false;
-            if(this.var_1.var_2080 && Boolean(_loc44_.mEquipMount))
+            if(Boolean(_loc44_.mEquipMount))
             {
                _loc157_ = PowerType.var_440;
                _loc158_ = Boolean(_loc157_) && Boolean(_loc157_.var_381) ? class_14.buffTypesDict[_loc157_.var_381[0]] : null;
