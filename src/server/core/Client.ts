@@ -116,6 +116,11 @@ export function clearClientSpawnFallbackTimer(client: Pick<Client, 'clientSpawnF
 
 export class Client {
     private static readonly PENDING_TRANSFER_GRACE_MS = 15000;
+    private static readonly QUIET_SOCKET_ERROR_CODES = new Set([
+        'ECONNABORTED',
+        'ECONNRESET',
+        'EPIPE'
+    ]);
 
     public socket: net.Socket;
     public router: PacketRouter;
@@ -600,6 +605,11 @@ export class Client {
     }
 
     private onError(err: Error): void {
+        const socketError = err as NodeJS.ErrnoException;
+        if (socketError.code && Client.QUIET_SOCKET_ERROR_CODES.has(socketError.code)) {
+            return;
+        }
+
         const addr = `${this.socket.remoteAddress}:${this.socket.remotePort}`;
         console.error(`[Client] Error from ${addr}:`, err);
     }
