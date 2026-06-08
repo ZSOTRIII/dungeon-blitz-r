@@ -43082,7 +43082,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate,MistWalkArmorBreak</AddTargetBuff>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
 		<CastAnimSource>Feet</CastAnimSource>
@@ -43152,7 +43152,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Intimidate45</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Intimidate45,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43223,7 +43223,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate45</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate45,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43294,7 +43294,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate45</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate45,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43365,7 +43365,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate50</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate50,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43436,7 +43436,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate50</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Intimidate50,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43507,7 +43507,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate50</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate50,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43578,7 +43578,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate55</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate55,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43649,7 +43649,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate55</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate55,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43720,7 +43720,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate60</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate60,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
@@ -43791,7 +43791,7 @@
 		<ProcModifier>1</ProcModifier>
 		<DamageType>Physical</DamageType>
 		<PowerGroup>MistWalk</PowerGroup>
-		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate</AddTargetBuff>
+		<AddTargetBuff>Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Bleeding,Intimidate,MistWalkArmorBreak</AddTargetBuff>
 		<BasePowerName>MistWalkClose</BasePowerName>
 		<Description>Mistwalk combo.</Description>
 		<CastSound>CHR_Executioner_MistWalk_End</CastSound>
