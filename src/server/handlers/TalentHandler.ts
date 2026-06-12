@@ -170,7 +170,6 @@ export class TalentHandler {
 
         const currentPoints = Number(client.character.talentPoints[String(classIndex)] ?? 0);
         const durationIndex = currentPoints + 1;
-        const duration = Number(TalentConfig.RESEARCH_DURATIONS[durationIndex] ?? 0);
         const goldCost = Number(TalentConfig.RESEARCH_COSTS[durationIndex] ?? 0);
         const idolCost = Number(TalentConfig.IDOL_COST[durationIndex] ?? 0);
         const now = Math.floor(Date.now() / 1000);
@@ -201,11 +200,12 @@ export class TalentHandler {
         client.character.gold = gold - goldCost;
         client.character.talentResearch = {
             classIndex,
-            ReadyTime: now + duration
+            ReadyTime: now
         };
 
         await TalentHandler.saveCharacter(client);
         TalentHandler.syncResearchTimer(client);
+        TalentHandler.sendTalentResearchComplete(client, classIndex);
     }
 
     static async handleTalentSpeedup(client: Client, data: Buffer): Promise<void> {

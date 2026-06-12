@@ -260,18 +260,16 @@ async function testInstantResearchRequiresClaimLikePython(): Promise<void> {
     });
 }
 
-async function testTimedResearchSchedulesCompletionNotify(): Promise<void> {
+async function testGoldResearchCompletesWithoutTimer(): Promise<void> {
     const client = createClient();
     const originalSetTimeout = global.setTimeout;
-    const originalDateNow = Date.now;
-    let scheduledCallback: (() => void) | null = null;
-    let scheduledDelayMs = -1;
-    let fakeNowMs = originalDateNow();
+    const beforeStart = Math.floor(Date.now() / 1000);
+    let timerArmed = false;
 
-    Date.now = () => fakeNowMs;
     (global as typeof globalThis & { setTimeout: typeof setTimeout }).setTimeout = ((callback: (...args: any[]) => void, delay?: number) => {
-        scheduledCallback = () => callback();
-        scheduledDelayMs = Number(delay ?? 0);
+        void callback;
+        void delay;
+        timerArmed = true;
         return { unref() { return undefined; } } as unknown as NodeJS.Timeout;
     }) as typeof setTimeout;
 
@@ -281,24 +279,15 @@ async function testTimedResearchSchedulesCompletionNotify(): Promise<void> {
         });
 
         const research = client.character.talentResearch as Record<string, unknown>;
-        const readyTime = Number(research.ReadyTime ?? 0);
         assert.equal(Number(research.classIndex ?? -1), 2);
-        assert.ok(scheduledDelayMs > 0, 'timed research should arm a completion timer');
-        assert.ok(scheduledCallback, 'timed research should schedule a completion callback');
-
-        fakeNowMs = (readyTime * 1000) + 1000;
-        const runScheduledCallback = scheduledCallback as (() => void) | null;
-        if (runScheduledCallback) {
-            runScheduledCallback();
-        }
-
+        assert.ok(Number(research.ReadyTime ?? 0) >= beforeStart);
+        assert.equal(timerArmed, false, 'gold talent research should not arm a completion timer');
         assert.equal(
             client.sentPackets.some((packet) => packet.id === 0xD5),
             true,
-            'scheduled completion should notify the client when research finishes'
+            'gold talent research should notify completion immediately'
         );
     } finally {
-        Date.now = originalDateNow;
         (global as typeof globalThis & { setTimeout: typeof setTimeout }).setTimeout = originalSetTimeout;
     }
 }
@@ -458,7 +447,7 @@ async function main(): Promise<void> {
     await testAllocateTalentTreePreservesHighNodeTypeIdsAndClampsByStorageSlot();
     await testEmptyAllocateDoesNotClearSavedTalentTree();
     await testInstantResearchRequiresClaimLikePython();
-    await testTimedResearchSchedulesCompletionNotify();
+    await testGoldResearchCompletesWithoutTimer();
     testEntityBuildsTalentsFromTalentTree();
     testEntityTalentSlotsKeepClientSlotPositions();
     testWorldEnterResolvesMasterClassFromTowerState();

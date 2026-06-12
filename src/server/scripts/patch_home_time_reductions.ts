@@ -3,7 +3,8 @@ import * as path from 'path';
 import { ensureBackup, parseSwz, writeSwz } from './swzPatchUtils';
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
-const MAX_HOME_TIMER_SECONDS = 4 * 24 * 60 * 60;
+const MIN_HOME_TIMER_SECONDS = 12 * 60 * 60;
+const MAX_HOME_TIMER_SECONDS = 3 * 24 * 60 * 60;
 const DATA_FILES = [
     {
         label: 'BuildingTypes',
@@ -22,15 +23,18 @@ const GAME_SWZ_FILES = ['Game.swz', 'Game.en.swz', 'Game.tr.swz'].map((fileName)
     path.join(ROOT, 'src', 'client', 'content', 'localhost', 'p', 'cbq', fileName)
 );
 
-function capUpgradeTimeValue(value: string): string {
+function clampUpgradeTimeValue(value: string): string {
     const numeric = Math.max(0, Math.round(Number(value || 0)));
-    return String(numeric > MAX_HOME_TIMER_SECONDS ? MAX_HOME_TIMER_SECONDS : numeric);
+    if (numeric <= 0) {
+        return '0';
+    }
+    return String(Math.max(MIN_HOME_TIMER_SECONDS, Math.min(numeric, MAX_HOME_TIMER_SECONDS)));
 }
 
-function capXmlUpgradeTimes(xml: string): { xml: string; changes: number } {
+function clampXmlUpgradeTimes(xml: string): { xml: string; changes: number } {
     let changes = 0;
     const nextXml = xml.replace(/<UpgradeTime>(\d+)<\/UpgradeTime>/g, (match, value: string) => {
-        const capped = capUpgradeTimeValue(value);
+        const capped = clampUpgradeTimeValue(value);
         if (capped !== value) {
             changes += 1;
             return `<UpgradeTime>${capped}</UpgradeTime>`;
@@ -43,8 +47,8 @@ function capXmlUpgradeTimes(xml: string): { xml: string; changes: number } {
 function verifyXmlUpgradeTimes(xml: string, label: string): void {
     for (const match of xml.matchAll(/<UpgradeTime>(\d+)<\/UpgradeTime>/g)) {
         const value = Number(match[1] ?? 0);
-        if (value > MAX_HOME_TIMER_SECONDS) {
-            throw new Error(`${label} keeps UpgradeTime ${value}, above ${MAX_HOME_TIMER_SECONDS}`);
+        if (value > 0 && (value < MIN_HOME_TIMER_SECONDS || value > MAX_HOME_TIMER_SECONDS)) {
+            throw new Error(`${label} keeps UpgradeTime ${value}, outside ${MIN_HOME_TIMER_SECONDS}-${MAX_HOME_TIMER_SECONDS}`);
         }
     }
 }
@@ -56,7 +60,7 @@ function patchLooseXml(filePath: string, verify: boolean): number {
         return 0;
     }
 
-    const patched = capXmlUpgradeTimes(original);
+    const patched = clampXmlUpgradeTimes(original);
     if (patched.changes > 0) {
         fs.writeFileSync(filePath, patched.xml, 'utf8');
     }
@@ -69,7 +73,7 @@ function patchJson(filePath: string, pretty: boolean, verify: boolean): number {
     let changes = 0;
     for (const entry of data) {
         const current = String(entry.UpgradeTime ?? '0');
-        const capped = capUpgradeTimeValue(current);
+        const capped = clampUpgradeTimeValue(current);
         if (capped !== current) {
             entry.UpgradeTime = capped;
             changes += 1;
@@ -78,7 +82,7 @@ function patchJson(filePath: string, pretty: boolean, verify: boolean): number {
 
     if (verify) {
         if (changes > 0) {
-            throw new Error(`${filePath} keeps ${changes} UpgradeTime values above ${MAX_HOME_TIMER_SECONDS}`);
+            throw new Error(`${filePath} keeps ${changes} UpgradeTime values outside ${MIN_HOME_TIMER_SECONDS}-${MAX_HOME_TIMER_SECONDS}`);
         }
         return 0;
     }
@@ -104,7 +108,7 @@ function patchGameSwz(swzPath: string, verify: boolean): number {
             continue;
         }
 
-        const patched = capXmlUpgradeTimes(chunk.xml);
+        const patched = clampXmlUpgradeTimes(chunk.xml);
         if (patched.changes > 0) {
             chunk.xml = patched.xml;
             changes += patched.changes;
@@ -136,7 +140,7 @@ function main(): void {
     }
 
     const mode = verify ? 'Verified' : 'Patched';
-    console.log(`${mode} home timers at max ${MAX_HOME_TIMER_SECONDS}s (${totalChanges} changes)`);
+    console.log(`${mode} home timers between ${MIN_HOME_TIMER_SECONDS}s and ${MAX_HOME_TIMER_SECONDS}s (${totalChanges} changes)`);
 }
 
 main();

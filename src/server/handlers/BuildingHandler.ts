@@ -27,6 +27,8 @@ const buildingDefsByKey = new Map<string, BuildingDef>(
 );
 
 export class BuildingHandler {
+    private static readonly MIN_BUILDING_UPGRADE_SECONDS = 12 * 60 * 60;
+    private static readonly MAX_BUILDING_UPGRADE_SECONDS = 3 * 24 * 60 * 60;
     private static readonly CRAFT_TOWN_REFRESH_RETRY_DELAYS_MS = [1200, 2800];
 
     private static rejectVisitedHomeMutation(client: Client, action: string): boolean {
@@ -115,6 +117,18 @@ export class BuildingHandler {
         return buildingDefsByKey.get(`${buildingId}:${rank}`) ?? null;
     }
 
+    private static getUpgradeTimeSeconds(rawUpgradeTime: unknown): number {
+        const seconds = Math.max(0, Math.round(Number(rawUpgradeTime ?? 0)));
+        if (seconds <= 0) {
+            return 0;
+        }
+
+        return Math.max(
+            BuildingHandler.MIN_BUILDING_UPGRADE_SECONDS,
+            Math.min(seconds, BuildingHandler.MAX_BUILDING_UPGRADE_SECONDS)
+        );
+    }
+
     static refreshCraftTownBuildingsOnSpawn(client: Client): void {
         if (!client.character || !client.playerSpawned || client.currentLevel !== 'CraftTown') {
             return;
@@ -187,7 +201,7 @@ export class BuildingHandler {
 
         const goldCost = Math.max(0, Math.round(Number(buildingDef.GoldCost ?? 0)));
         const idolCost = Math.max(0, Math.round(Number(buildingDef.IdolCost ?? 0)));
-        const upgradeTime = Math.max(0, Math.round(Number(buildingDef.UpgradeTime ?? 0)));
+        const upgradeTime = BuildingHandler.getUpgradeTimeSeconds(buildingDef.UpgradeTime);
 
         if (usedIdols) {
             const idols = Number(client.character.mammothIdols ?? 0);

@@ -694,7 +694,6 @@ export class PetHandler {
 
         if (!client.character) return;
         
-        const trainTime = PetConfig.TRAINING_TIME[nextRank] || 0;
         const goldCost = PetConfig.TRAINING_GOLD_COST[nextRank] || 0;
         const idolCost = PetConfig.TRAINING_IDOL_COST[nextRank] || 0;
 
@@ -708,12 +707,10 @@ export class PetHandler {
             PetHandler.sendGoldLoss(client, goldCost);
         }
 
-        const readyAt = Math.floor(Date.now() / 1000) + trainTime;
-        
         client.character.trainingPet = [{
             typeID: typeID,
             special_id: uniqueID,
-            trainingTime: readyAt
+            trainingTime: 0
         }];
 
         await PetHandler.saveCharacter(client);
@@ -825,7 +822,7 @@ export class PetHandler {
         if (!hasPets) {
             duration = 180;
         } else {
-            duration = PetConfig.EGG_HATCH_TIMES[eggRank as 0|1|2] || 864000;
+            duration = PetConfig.getEggHatchTime(eggRank);
         }
 
         const now = Math.floor(Date.now() / 1000);
