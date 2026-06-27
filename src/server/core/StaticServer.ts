@@ -45,8 +45,12 @@ export class StaticServer {
     private host: string;
     private selectedSwfCache: { key: string; buffer: Buffer } | null;
     private readonly discordAccountLinks: DiscordAccountLinkService;
-    private readonly flashVersion = 'cbw';
-    private readonly gameVersion = 'cbv';
+    private readonly flashVersion = 'cdc';
+    private readonly gameVersion = 'cdc';
+
+    private static shouldLog(): boolean {
+        return process.env.DEBUG_STATIC_SERVER === '1';
+    }
 
     constructor(
         port: number = Config.STATIC_PORT,
@@ -81,7 +85,9 @@ export class StaticServer {
 
         const buffer = buildDungeonBlitzSwfVariantBuffer(swfPath, mode, locale);
         this.selectedSwfCache = { key: cacheKey, buffer };
-        console.log(`[StaticServer] Prepared DungeonBlitz.swf variant for ${mode} mode (${locale}).`);
+        if (StaticServer.shouldLog()) {
+            console.log(`[StaticServer] Prepared DungeonBlitz.swf variant for ${mode} mode (${locale}).`);
+        }
         return buffer;
     }
 
@@ -254,7 +260,7 @@ export class StaticServer {
                 req.path.endsWith('.swz') ||
                 req.path.endsWith('.xml');
 
-            if (shouldLog) {
+            if (shouldLog && StaticServer.shouldLog()) {
                 const remoteAddress = req.socket.remoteAddress ?? '-';
                 const startedAt = Date.now();
                 let finished = false;
@@ -317,6 +323,14 @@ export class StaticServer {
             res.sendFile(swzPath);
         });
 
+        this.app.get('/p/:assetVersion/Game.swz', (req, res) => {
+            const locale = this.resolveGameSwzLocale(req);
+            const swzPath = this.getGameSwzPathForLocale(locale);
+            res.type('application/x-shockwave-flash');
+            res.setHeader('X-DungeonBlitz-Language', locale);
+            res.sendFile(swzPath);
+        });
+
         this.app.get('/DungeonBlitzRemote.swf', (req, res) => {
             const locale = this.resolveSwfLocale(req);
             res.type('application/x-shockwave-flash');
@@ -327,14 +341,6 @@ export class StaticServer {
         this.app.get('/p/cbq/devSettings.xml', (_req, res) => {
             res.type('application/xml');
             res.send(this.renderDevSettings(devSettingsPath));
-        });
-
-        this.app.get(`/p/${this.flashVersion}/Game.swz`, (req, res) => {
-            const locale = this.resolveGameSwzLocale(req);
-            const swzPath = this.getGameSwzPathForLocale(locale);
-            res.type('application/x-shockwave-flash');
-            res.setHeader('X-DungeonBlitz-Language', locale);
-            res.sendFile(swzPath);
         });
 
         this.app.use(`/p/${this.flashVersion}`, (req, res, next) => {
@@ -518,27 +524,29 @@ export class StaticServer {
 
     public start(): void {
         this.server = this.app.listen(this.port, this.host, () => {
-            const portSuffix = this.port === 80 ? '' : `:${this.port}`;
-            const baseUrl = `http://${Config.HOST}${portSuffix}`;
-            console.log(`[StaticServer] Serving ${this.contentDir} on http://${this.host}:${this.port}`);
-            console.log(`[StaticServer] Multiplayer mode: ${Config.MULTIPLAYER_MODE}`);
-            console.log(`[StaticServer] Browser URL: ${baseUrl}/`);
-            console.log(`[StaticServer] Flash URL: ${baseUrl}${this.getSelectedSwfUrl()}`);
+            if (StaticServer.shouldLog()) {
+                const portSuffix = this.port === 80 ? '' : `:${this.port}`;
+                const baseUrl = `http://${Config.HOST}${portSuffix}`;
+                console.log(`[StaticServer] Serving ${this.contentDir} on http://${this.host}:${this.port}`);
+                console.log(`[StaticServer] Multiplayer mode: ${Config.MULTIPLAYER_MODE}`);
+                console.log(`[StaticServer] Browser URL: ${baseUrl}/`);
+                console.log(`[StaticServer] Flash URL: ${baseUrl}${this.getSelectedSwfUrl()}`);
+            }
         });
 
         this.server.on('error', (error) => {
             const socketError = error as NodeJS.ErrnoException;
             if (socketError.code === 'EADDRINUSE') {
                 console.error(
-                    `[StaticServer] Cannot listen on ${this.host}:${this.port} because the port is already in use.`
+                    `[Server] Cannot listen on ${this.host}:${this.port} because the port is already in use.`
                 );
-                console.error('[StaticServer] Stop the previous dev server or change STATIC_PORT before restarting.');
+                console.error('[Server] Stop the previous dev server or change STATIC_PORT before restarting.');
                 process.exitCode = 1;
                 setImmediate(() => process.exit(1));
                 return;
             }
 
-            console.error('[StaticServer] Server error:', error);
+            console.error('[Server] Static server error:', error);
         });
     }
 

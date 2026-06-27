@@ -5,6 +5,7 @@ import { UserAccount, Character } from '../database/Database';
 import { JsonAdapter } from '../database/JsonAdapter';
 import { DebugLogger } from './Debug';
 import type { DungeonRunStats } from './DungeonRunStats';
+import { clearStoredDungeonSnapshot } from './DungeonSnapshot';
 import { LevelConfig } from './LevelConfig';
 
 const db = new JsonAdapter();
@@ -23,6 +24,21 @@ export interface PendingLootDrop {
     tier?: number;
     material?: number;
     dye?: number;
+    __lootDropMetadata?: {
+        lootdropId: number;
+        lootDropNonce: string;
+        sourceEnemyLootDropNonce: string;
+        sourceEnemyCanonicalId: number;
+        ownerToken: number;
+        partyId: number;
+        sharedScope: string;
+        amount: number;
+        type: string;
+        reason: string;
+        caller: string;
+        collected: boolean;
+        collectedBy: number;
+    };
 }
 
 export interface KeepTutorialState {
@@ -582,6 +598,8 @@ export class Client {
         if (!this.character) {
             return;
         }
+
+        clearStoredDungeonSnapshot(this.character);
 
         const safeReturn = LevelConfig.resolveDungeonSafeReturn(
             this.currentLevel || this.character.CurrentLevel?.name,
